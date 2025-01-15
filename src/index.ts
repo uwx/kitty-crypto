@@ -26,10 +26,10 @@ export async function encryptData(data: Uint8Array, passphrase?: string, target:
 export async function decryptData(ciphertext: Bytes | Uint8Array, passphrase: string) {
     ciphertext = fromFormat(ciphertext);
 
-    const e = new Decrypter();
-    e.addPassphrase(passphrase);
+    const d = new Decrypter();
+    d.addPassphrase(passphrase);
 
-    return await e.decrypt(ciphertext);
+    return await d.decrypt(ciphertext);
 }
 
 export async function encryptDataPublicKey(data: Uint8Array, recipients: string | Recipient | string[] | Recipient[], target?: 'bytes'): Promise<Bytes>;
@@ -50,16 +50,16 @@ export async function encryptDataPublicKey(data: Uint8Array, recipients: string 
 export async function decryptDataPublicKey(ciphertext: Bytes | Uint8Array, identities: string | CryptoKey | Identity | string[] | CryptoKey[] | Identity[]) {
     ciphertext = fromFormat(ciphertext);
 
-    const e = new Decrypter();
+    const d = new Decrypter();
     if (Array.isArray(identities)) {
         for (const identity of identities) {
-            e.addIdentity(identity);
+            d.addIdentity(identity);
         }
     } else {
-        e.addIdentity(identities);
+        d.addIdentity(identities);
     }
 
-    return await e.decrypt(ciphertext);
+    return await d.decrypt(ciphertext);
 }
 
 function toFormat(data: Uint8Array, target?: 'bytes'): Bytes;
