@@ -12,12 +12,13 @@ export function generatePassphrase(bits = 128) {
     return toBase58(crypto.getRandomValues(new Uint8Array(Math.max(1, (bits / 8) | 0))));
 }
 
-export async function encryptData(data: Uint8Array, passphrase?: string, target?: 'bytes'): Promise<Bytes>;
-export async function encryptData(data: Uint8Array, passphrase: string | undefined, target: 'uint8array'): Promise<Uint8Array>;
-export async function encryptData(data: Uint8Array, passphrase?: string, target: 'bytes' | 'uint8array' = 'bytes') {
+export async function encryptData(data: Uint8Array, passphrase?: string, target?: 'bytes', workFactor?: number): Promise<Bytes>;
+export async function encryptData(data: Uint8Array, passphrase: string | undefined, target: 'uint8array', workFactor?: number): Promise<Uint8Array>;
+export async function encryptData(data: Uint8Array, passphrase?: string, target: 'bytes' | 'uint8array' = 'bytes', workFactor = 18) {
     passphrase ??= generatePassphrase();
 
     const e = new Encrypter();
+    e.setScryptWorkFactor(workFactor);
     e.setPassphrase(passphrase);
 
     return toFormat(await e.encrypt(data), target);
